@@ -20,16 +20,6 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Chrome & ChromeDriver
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq \
-            google-chrome-stable \
-            chromium-chromedriver \
-            || true
-          # Fallback: use the setup-chrome action approach
-          which chromedriver || sudo ln -s /usr/bin/chromedriver /usr/local/bin/chromedriver
-
       - name: Install Python dependencies
         run: |
           pip install --upgrade pip
