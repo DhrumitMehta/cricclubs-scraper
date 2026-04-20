@@ -4,3 +4,4 @@ pandas>=2.0
 supabase>=2.0
 python-dotenv>=1.0
 APScheduler>=3.10      # only needed if using scheduler.py on a server
+webdriver-manager
