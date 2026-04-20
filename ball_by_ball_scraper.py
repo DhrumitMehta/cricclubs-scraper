@@ -59,7 +59,7 @@ BATCH_SIZE = 100
 CHECKPOINT_EVERY = 20
 
 # Supabase table name
-TABLE_NAME = "ball_by_ball"
+TABLE_NAME = "tca_db_ball_by_ball"
 
 # Scrape delay between requests (seconds)
 SCRAPE_DELAY = 1.5
