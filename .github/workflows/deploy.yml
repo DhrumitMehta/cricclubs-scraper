@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-        contents: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -17,8 +17,14 @@ jobs:
           sed -i "s|%%SUPABASE_URL%%|${{ secrets.SUPABASE_URL }}|g" stats.html
           sed -i "s|%%SUPABASE_ANON_KEY%%|${{ secrets.SUPABASE_ANON_KEY }}|g" stats.html
 
+      - name: Prepare output
+        run: |
+          mkdir dist
+          cp stats.html dist/index.html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./dist
+          force_orphan: true
