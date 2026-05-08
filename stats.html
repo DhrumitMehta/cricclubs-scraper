@@ -498,6 +498,13 @@
     margin-bottom: 1.5rem;
   }
 
+  /* FETCH PROGRESS */
+  .fetch-progress {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 0.5rem;
+  }
+
   @media (max-width: 768px) {
     .container { padding: 1rem; }
     .summary-cards { grid-template-columns: repeat(2, 1fr); }
@@ -670,7 +677,7 @@ function showCfgError(msg) {
   el.textContent = msg; el.style.display = 'block';
 }
 
-// ─── SUPABASE QUERY ───────────────────────────────────────
+// ─── SUPABASE SINGLE-PAGE QUERY ───────────────────────────
 async function query(table, params = '') {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
     headers: {
@@ -681,6 +688,39 @@ async function query(table, params = '') {
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
+}
+
+// ─── SUPABASE PAGINATED QUERY — FETCHES ALL ROWS ──────────
+// Loops in batches of 1000 until Supabase returns fewer rows
+// than the batch size, meaning we've reached the last page.
+async function queryAll(table, params = '', onProgress = null) {
+  const BATCH = 1000;
+  let offset = 0;
+  let allRows = [];
+
+  while (true) {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${table}?${params}&limit=${BATCH}&offset=${offset}`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'count=exact'
+        }
+      }
+    );
+    if (!res.ok) throw new Error(await res.text());
+    const batch = await res.json();
+    allRows = allRows.concat(batch);
+
+    if (onProgress) onProgress(allRows.length);
+
+    // If we got fewer rows than the batch size, we're on the last page
+    if (batch.length < BATCH) break;
+    offset += BATCH;
+  }
+
+  return allRows;
 }
 
 // ─── DATE FILTER ─────────────────────────────────────────
@@ -703,18 +743,22 @@ async function loadData() {
     const format = document.getElementById('filterFormat').value;
     const dateFilter = getDateFilter();
 
+    // Build params WITHOUT a limit — queryAll handles pagination
     let params = `select=*${dateFilter}`;
     if (event) params += `&event_name=eq.${encodeURIComponent(event)}`;
     if (format) params += `&match_format=eq.${format}`;
-    params += '&limit=5000';
 
     const table = currentTab === 'batting' ? 'tca_db_scorecard_batting' : 'tca_db_scorecard_bowling';
-    const data = await query(table, params);
+
+    // Fetch ALL rows with progress updates
+    const data = await queryAll(table, params, (count) => {
+      updateLoadingProgress(count);
+    });
 
     allData = data;
     setConnStatus('connected');
 
-    // Populate event filter
+    // Populate event filter (also uses queryAll to get all unique events)
     await populateEventFilter();
 
     if (currentTab === 'batting') {
@@ -731,7 +775,8 @@ async function loadData() {
 async function populateEventFilter() {
   try {
     const table = currentTab === 'batting' ? 'tca_db_scorecard_batting' : 'tca_db_scorecard_bowling';
-    const data = await query(table, 'select=event_name&limit=5000');
+    // Fetch all event names (no limit cap)
+    const data = await queryAll(table, 'select=event_name');
     const events = [...new Set(data.map(r => r.event_name).filter(Boolean))].sort();
     const sel = document.getElementById('filterEvent');
     const cur = sel.value;
@@ -1077,9 +1122,15 @@ function showLoading() {
     <div class="state-msg">
       <div class="spinner"></div>
       <h3>Loading data…</h3>
-      <p>Fetching from Supabase</p>
+      <p>Fetching all rows from Supabase</p>
+      <p class="fetch-progress" id="fetchProgress"></p>
     </div>`;
   document.getElementById('summaryCards').innerHTML = '';
+}
+
+function updateLoadingProgress(count) {
+  const el = document.getElementById('fetchProgress');
+  if (el) el.textContent = `${count.toLocaleString()} rows fetched…`;
 }
 
 function showError(msg) {
