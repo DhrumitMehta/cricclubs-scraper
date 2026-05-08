@@ -694,7 +694,7 @@ async function query(table, params = '') {
 // Loops in batches of 1000 until Supabase returns fewer rows
 // than the batch size, meaning we've reached the last page.
 async function queryAll(table, params = '', onProgress = null) {
-  const BATCH = 1000;
+  const BATCH = 10000;
   let offset = 0;
   let allRows = [];
 
