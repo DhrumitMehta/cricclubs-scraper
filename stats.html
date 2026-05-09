@@ -773,8 +773,8 @@ async function loadData() {
     const table = currentTab === 'batting' ? 'tca_db_scorecard_batting' : 'tca_db_scorecard_bowling';
 
     // Fetch ALL rows with progress updates
-    const data = await queryAll(table, params, (count) => {
-      updateLoadingProgress(count);
+    const data = await queryAll(table, params, (count, total) => {
+      updateLoadingProgress(count, total);
     });
 
     allData = data;
