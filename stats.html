@@ -691,10 +691,32 @@ async function query(table, params = '') {
 }
 
 // ─── SUPABASE PAGINATED QUERY — FETCHES ALL ROWS ──────────
-// Loops in batches of 1000 until Supabase returns fewer rows
+// Loops in batches of 10000 until Supabase returns fewer rows
 // than the batch size, meaning we've reached the last page.
 async function queryAll(table, params = '', onProgress = null) {
   const BATCH = 10000;
+  
+  // First, get the total count
+  let totalCount = 0;
+  try {
+    const countRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/${table}?${params}&limit=1`,
+      {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'count=exact'
+        }
+      }
+    );
+    const countHeader = countRes.headers.get('content-range');
+    if (countHeader) {
+      totalCount = parseInt(countHeader.split('/')[1]) || 0;
+    }
+  } catch (e) {
+    // If count fails, just proceed without knowing total
+  }
+  
   let offset = 0;
   let allRows = [];
 
@@ -713,7 +735,7 @@ async function queryAll(table, params = '', onProgress = null) {
     const batch = await res.json();
     allRows = allRows.concat(batch);
 
-    if (onProgress) onProgress(allRows.length);
+    if (onProgress) onProgress(allRows.length, totalCount);
 
     // If we got fewer rows than the batch size, we're on the last page
     if (batch.length < BATCH) break;
@@ -1128,9 +1150,16 @@ function showLoading() {
   document.getElementById('summaryCards').innerHTML = '';
 }
 
-function updateLoadingProgress(count) {
+function updateLoadingProgress(current, total) {
   const el = document.getElementById('fetchProgress');
-  if (el) el.textContent = `${count.toLocaleString()} rows fetched…`;
+  if (el) {
+    if (total > 0) {
+      const pct = Math.round((current / total) * 100);
+      el.textContent = `${pct}% loaded (${current.toLocaleString()}/${total.toLocaleString()})`;
+    } else {
+      el.textContent = `${current.toLocaleString()} rows fetched…`;
+    }
+  }
 }
 
 function showError(msg) {

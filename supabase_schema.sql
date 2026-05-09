@@ -39,3 +39,48 @@ create index if not exists idx_bbb_match_id    on ball_by_ball (match_id);
 create index if not exists idx_bbb_event       on ball_by_ball (event_name);
 create index if not exists idx_bbb_batter      on ball_by_ball (batter);
 create index if not exists idx_bbb_bowler      on ball_by_ball (bowler);
+
+-- Series metadata table for series_info_scraper.py
+create table if not exists series_info (
+  id               bigserial primary key,
+  series_id        integer       not null unique,
+  club_id          integer,
+  series_name      text,
+  season           text,
+  status           text,
+  series_format    text,
+  venue            text,
+  organizer        text,
+  start_date       date,
+  end_date         date,
+  match_count      integer,
+  teams            text[],
+  team_count       integer,
+  last_updated_by  text,
+  last_updated_at  text,
+  scraped_at       timestamptz   default now()
+);
+
+create unique index if not exists series_info_unique_series
+  on series_info (series_id);
+
+-- Player profile table for player_info_scraper.py
+create table if not exists tca_db_player_info (
+  id               bigserial primary key,
+  player_id        integer       not null unique,
+  club_id          integer,
+  name             text,
+  verified         boolean       default false,
+  current_team     text,
+  current_team_id  integer,
+  teams            text[],
+  age              integer,
+  playing_role     text,
+  batting_style    text,
+  bowling_style    text,
+  scraped_at       timestamptz   default now()
+);
+
+create unique index if not exists tca_db_player_info_unique_player
+  on tca_db_player_info (player_id);
+
