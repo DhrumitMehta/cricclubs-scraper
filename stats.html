@@ -917,8 +917,9 @@
           <input type="text" placeholder="Search player..." id="searchInput" oninput="renderTable()" style="min-width:180px">
         </div>
         <button class="btn btn-secondary btn-sm" onclick="exportCSV(false)">⬇ CSV</button>
-        <button class="btn btn-secondary btn-sm" onclick="exportPDF()">📄 PDF</button>
-        <button class="btn btn-primary btn-sm" id="exportSelectedBtn" onclick="exportCSV(true)" style="display:none">⬇ Export Selected</button>
+        <button class="btn btn-secondary btn-sm" onclick="exportPDF(false)">📄 PDF</button>
+        <button class="btn btn-primary btn-sm" id="exportSelectedCSVBtn" onclick="exportCSV(true)" style="display:none">⬇ CSV Selected</button>
+        <button class="btn btn-primary btn-sm" id="exportSelectedPDFBtn" onclick="exportPDF(true)" style="display:none">📄 PDF Selected</button>
       </div>
     </div>
 
@@ -931,7 +932,8 @@
     <div class="selection-bar" id="selectionBar">
       <span class="selection-info" id="selectionInfo">0 players selected</span>
       <button class="btn btn-ghost btn-sm" onclick="clearSelection()">Clear Selection</button>
-      <button class="btn btn-primary btn-sm" onclick="exportCSV(true)">⬇ Export Selected</button>
+      <button class="btn btn-primary btn-sm" onclick="exportCSV(true)">⬇ CSV Selected</button>
+      <button class="btn btn-primary btn-sm" onclick="exportPDF(true)">📄 PDF Selected</button>
     </div>
 
     <div id="tableContainer">
@@ -2003,14 +2005,17 @@ function updateSelectionBar() {
   const count = selectedPlayerIds.size;
   const bar = document.getElementById('selectionBar');
   const info = document.getElementById('selectionInfo');
-  const exportBtn = document.getElementById('exportSelectedBtn');
+  const csvBtn = document.getElementById('exportSelectedCSVBtn');
+  const pdfBtn = document.getElementById('exportSelectedPDFBtn');
   if (count > 0) {
     bar.classList.add('visible');
     info.textContent = `${count} player${count > 1 ? 's' : ''} selected`;
-    exportBtn.style.display = '';
+    if (csvBtn) csvBtn.style.display = '';
+    if (pdfBtn) pdfBtn.style.display = '';
   } else {
     bar.classList.remove('visible');
-    exportBtn.style.display = 'none';
+    if (csvBtn) csvBtn.style.display = 'none';
+    if (pdfBtn) pdfBtn.style.display = 'none';
   }
 }
 
@@ -2066,12 +2071,16 @@ function switchTab(tab) {
 }
 
 // ─── EXPORT PDF ───────────────────────────────────────────
-function exportPDF() {
+let _pdfSelectedOnly = false;
+
+function exportPDF(selectedOnly = false) {
   const data = window._filteredData;
   if (!data || !data.length) return;
+  _pdfSelectedOnly = selectedOnly;
   // Pre-fill title with sensible default then show modal
   const tabLabels = { batting:'Batting Leaders', bowling:'Bowling Leaders', fielding:'Fielding Leaders', allround:'All-Round Stats' };
-  document.getElementById('pdfTitleInput').value = `TCA Cricket Stats – ${tabLabels[currentTab] || 'Stats'}`;
+  const selSuffix = selectedOnly && selectedPlayerIds.size > 0 ? ' – Selected Players' : '';
+  document.getElementById('pdfTitleInput').value = `TCA Cricket Stats – ${tabLabels[currentTab] || 'Stats'}${selSuffix}`;
   document.getElementById('pdfSubtitleInput').value = '';
   document.getElementById('pdfTitleModal').classList.add('open');
   setTimeout(() => {
@@ -2088,7 +2097,7 @@ function confirmPDFExport() {
   const customTitle    = document.getElementById('pdfTitleInput').value.trim();
   const customSubtitle = document.getElementById('pdfSubtitleInput').value.trim();
   closePDFTitleModal();
-  generatePDF(customTitle, customSubtitle);
+  generatePDF(customTitle, customSubtitle, _pdfSelectedOnly);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -2097,9 +2106,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function generatePDF(customTitle, customSubtitle) {
-  const data = window._filteredData;
+function generatePDF(customTitle, customSubtitle, selectedOnly = false) {
+  let data = window._filteredData;
   if (!data || !data.length) return;
+
+  if (selectedOnly && selectedPlayerIds.size > 0) {
+    data = data.filter(r => selectedPlayerIds.has(r.id));
+  }
 
   const defaultTabLabels = {
     batting:  'Batting Leaders',
@@ -2305,7 +2318,7 @@ function generatePDF(customTitle, customSubtitle) {
   </div>
   <div class="pdf-header-right">
     <div class="report-title">${title}</div>
-    <div class="report-meta">Generated ${now} · ${rows.length} players</div>
+    <div class="report-meta">Generated ${now} · ${rows.length} player${rows.length !== 1 ? 's' : ''}${selectedOnly && selectedPlayerIds.size > 0 ? ' (selected)' : ''}</div>
     <div class="report-filters">${subtitleLine}</div>
   </div>
 </div>
