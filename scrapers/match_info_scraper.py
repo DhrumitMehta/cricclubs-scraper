@@ -90,7 +90,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 CLUB_ID   = 7605
 CLUB_SLUG = "Tanzania"
 
-BATCH_SIZE       = 100  # match IDs to attempt per run
+BATCH_SIZE       = 10  # match IDs to attempt per run
 CHECKPOINT_EVERY = 20    # flush to Supabase every N successful matches
 SCRAPE_DELAY     = 3.0   # seconds between requests
 
@@ -105,7 +105,15 @@ def create_driver() -> uc.Chrome:
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
-    driver = uc.Chrome(options=options, version_main=149)  # no headless
+
+    # Run headless in CI (no display available on GitHub Actions runners).
+    # Locally you can still run with a visible browser by setting CI unset.
+    headless = os.environ.get("CI", "").lower() == "true" or os.environ.get("GITHUB_ACTIONS", "").lower() == "true"
+
+    if headless:
+        options.add_argument("--headless=new")
+
+    driver = uc.Chrome(options=options, version_main=149, headless=headless)
     return driver
 
 
