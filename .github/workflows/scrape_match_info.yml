@@ -1,9 +1,9 @@
-name: Weekly Match Info Scraper
+name: Daily Match Info Scraper
 
 on:
   schedule:
-    # 03:00 UTC Monday = 06:00 EAT (UTC+3)
-    - cron: "0 3 * * 1"
+    # 03:00 UTC daily = 06:00 EAT (UTC+3)
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -32,4 +32,4 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-        run: python scrapers/match_info_scraper.py --batch-size 100
+        run: python scrapers/match_info_scraper.py --batch-size 10
