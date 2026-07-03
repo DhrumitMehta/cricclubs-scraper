@@ -105,15 +105,7 @@ def create_driver() -> uc.Chrome:
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
-
-    # Run headless in CI (no display available on GitHub Actions runners).
-    # Locally you can still run with a visible browser by setting CI unset.
-    headless = os.environ.get("CI", "").lower() == "true" or os.environ.get("GITHUB_ACTIONS", "").lower() == "true"
-
-    if headless:
-        options.add_argument("--headless=new")
-
-    driver = uc.Chrome(options=options, version_main=149, headless=headless)
+    driver = uc.Chrome(options=options, version_main=149)  # runs against Xvfb's virtual display in CI
     return driver
 
 
