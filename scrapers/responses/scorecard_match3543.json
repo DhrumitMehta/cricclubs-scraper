@@ -1,0 +1,63 @@
+{
+  "data": {
+    "matchInfo": {
+      "teamOne": 1007,
+      "teamOneName": "Gairo B Boys",
+      "teamTwo": 1015,
+      "teamTwoName": "Moghoigwa Boys",
+      "overs": 0,
+      "isUmpireReportRequired": 0,
+      "isCaptainReportRequired": 0,
+      "isFollowOn": 0,
+      "team1Captain": 0,
+      "team2Captain": 0,
+      "team1WicketKeeper": 0,
+      "team2WicketKeeper": 0
+    },
+    "innings1": {
+      "runRate": null,
+      "rrr": null,
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "0.0",
+      "teamId": 1007,
+      "teamName": "Gairo B Boys",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings2": {
+      "runRate": null,
+      "rrr": "0.05",
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "0.0",
+      "teamId": 1015,
+      "teamName": "Moghoigwa Boys",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings3": null,
+    "innings4": null,
+    "partnershipMap": null
+  },
+  "errorMessage": null,
+  "errorCode": null,
+  "rootCause": null,
+  "responseState": true
+}

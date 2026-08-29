@@ -1752,12 +1752,12 @@ async function loadReferenceData() {
       };
     });
 
-    const matchRows = await queryAll('tca_db_match_info', 'select=match_id,match_date,venue');
+    const matchRows = await queryAll('tca_db_match_info_v2', 'select=match_id,match_date,venue');
     matchInfoMap = {};
     matchRows.forEach(r => {
       matchInfoMap[String(r.match_id)] = {
         match_date: r.match_date ? r.match_date.slice(0, 10) : '',
-        venue: r.venue || ''
+        venue: r.location || ''
       };
     });
 
@@ -1876,8 +1876,8 @@ async function loadData(forceFetch = false) {
       const needBat  = forceFetch || !rawDataCache.batting;
       const needBowl = forceFetch || !rawDataCache.bowling;
       if (needBat || needBowl) { showLoading(); setConnStatus('loading'); }
-      if (needBat)  rawDataCache.batting  = await queryAll('tca_db_scorecard_batting',  'select=*', (c, t) => updateLoadingProgress(c, t, 'batting'));
-      if (needBowl) rawDataCache.bowling  = await queryAll('tca_db_scorecard_bowling',  'select=*', (c, t) => updateLoadingProgress(c, t, 'bowling'));
+      if (needBat)  rawDataCache.batting  = await queryAll('tca_db_scorecard_batting_v2',  'select=*', (c, t) => updateLoadingProgress(c, t, 'batting'));
+      if (needBowl) rawDataCache.bowling  = await queryAll('tca_db_scorecard_bowling_v2',  'select=*', (c, t) => updateLoadingProgress(c, t, 'bowling'));
       setConnStatus('connected');
       processAllRound();
 
@@ -1885,14 +1885,14 @@ async function loadData(forceFetch = false) {
       const needBat = forceFetch || !rawDataCache.batting;
       if (needBat) {
         showLoading(); setConnStatus('loading');
-        rawDataCache.batting = await queryAll('tca_db_scorecard_batting', 'select=*', (c, t) => updateLoadingProgress(c, t, 'batting'));
+        rawDataCache.batting = await queryAll('tca_db_scorecard_batting_v2', 'select=*', (c, t) => updateLoadingProgress(c, t, 'batting'));
         setConnStatus('connected');
       }
       processFieldingFromBatting();
 
     } else {
       if (forceFetch || !rawDataCache[currentTab]) {
-        const table = currentTab === 'batting' ? 'tca_db_scorecard_batting' : 'tca_db_scorecard_bowling';
+        const table = currentTab === 'batting' ? 'tca_db_scorecard_batting_v2' : 'tca_db_scorecard_bowling_v2';
         showLoading(); setConnStatus('loading');
         rawDataCache[currentTab] = await queryAll(table, 'select=*', (c, t) => updateLoadingProgress(c, t, currentTab));
         setConnStatus('connected');

@@ -1,0 +1,63 @@
+{
+  "data": {
+    "matchInfo": {
+      "teamOne": 1020,
+      "teamOneName": "Yeriko Boys",
+      "teamTwo": 1016,
+      "teamTwoName": "Msingisi Boys",
+      "overs": 0,
+      "isUmpireReportRequired": 0,
+      "isCaptainReportRequired": 0,
+      "isFollowOn": 0,
+      "team1Captain": 0,
+      "team2Captain": 0,
+      "team1WicketKeeper": 0,
+      "team2WicketKeeper": 0
+    },
+    "innings1": {
+      "runRate": null,
+      "rrr": null,
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "0.0",
+      "teamId": 1020,
+      "teamName": "Yeriko Boys",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings2": {
+      "runRate": null,
+      "rrr": "0.05",
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "0.0",
+      "teamId": 1016,
+      "teamName": "Msingisi Boys",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings3": null,
+    "innings4": null,
+    "partnershipMap": null
+  },
+  "errorMessage": null,
+  "errorCode": null,
+  "rootCause": null,
+  "responseState": true
+}

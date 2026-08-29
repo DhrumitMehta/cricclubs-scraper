@@ -1,0 +1,63 @@
+{
+  "data": {
+    "matchInfo": {
+      "teamOne": 867,
+      "teamOneName": "Ngorongoro Queens",
+      "teamTwo": 865,
+      "teamTwoName": "Kilimanjaro Queens",
+      "overs": 0,
+      "isUmpireReportRequired": 0,
+      "isCaptainReportRequired": 0,
+      "isFollowOn": 0,
+      "team1Captain": 1803358,
+      "team2Captain": 1814161,
+      "team1WicketKeeper": 0,
+      "team2WicketKeeper": 0
+    },
+    "innings1": {
+      "runRate": "0.00",
+      "rrr": null,
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "20.0",
+      "teamId": 867,
+      "teamName": "Ngorongoro Queens",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings2": {
+      "runRate": "0.00",
+      "rrr": "--.--",
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "20.0",
+      "teamId": 865,
+      "teamName": "Kilimanjaro Queens",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings3": null,
+    "innings4": null,
+    "partnershipMap": null
+  },
+  "errorMessage": null,
+  "errorCode": null,
+  "rootCause": null,
+  "responseState": true
+}

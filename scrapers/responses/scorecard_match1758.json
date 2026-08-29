@@ -1,0 +1,63 @@
+{
+  "data": {
+    "matchInfo": {
+      "teamOne": 693,
+      "teamOneName": "TCA Women",
+      "teamTwo": 672,
+      "teamTwoName": "Strikers B",
+      "overs": 0,
+      "isUmpireReportRequired": 0,
+      "isCaptainReportRequired": 0,
+      "isFollowOn": 0,
+      "team1Captain": 2052763,
+      "team2Captain": 996323,
+      "team1WicketKeeper": 0,
+      "team2WicketKeeper": 0
+    },
+    "innings1": {
+      "runRate": "0.00",
+      "rrr": null,
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "20.0",
+      "teamId": 693,
+      "teamName": "TCA Women",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings2": {
+      "runRate": "0.00",
+      "rrr": "--.--",
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "20.0",
+      "teamId": 672,
+      "teamName": "Strikers B",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings3": null,
+    "innings4": null,
+    "partnershipMap": null
+  },
+  "errorMessage": null,
+  "errorCode": null,
+  "rootCause": null,
+  "responseState": true
+}

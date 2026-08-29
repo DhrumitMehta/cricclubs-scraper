@@ -1,0 +1,63 @@
+{
+  "data": {
+    "matchInfo": {
+      "teamOne": 945,
+      "teamOneName": "Yongwe",
+      "teamTwo": 941,
+      "teamTwoName": "Nzasa II",
+      "overs": 0,
+      "isUmpireReportRequired": 0,
+      "isCaptainReportRequired": 0,
+      "isFollowOn": 0,
+      "team1Captain": 0,
+      "team2Captain": 0,
+      "team1WicketKeeper": 0,
+      "team2WicketKeeper": 0
+    },
+    "innings1": {
+      "runRate": null,
+      "rrr": null,
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "0.0",
+      "teamId": 945,
+      "teamName": "Yongwe",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings2": {
+      "runRate": null,
+      "rrr": "0.05",
+      "extras": {
+        "b": 0,
+        "lb": 0,
+        "nb": 0,
+        "wd": 0,
+        "pn": 0
+      },
+      "total": 0,
+      "overs": "0.0",
+      "teamId": 941,
+      "teamName": "Nzasa II",
+      "wickets": 0,
+      "batting": [],
+      "bowling": [],
+      "fallOfWickets": []
+    },
+    "innings3": null,
+    "innings4": null,
+    "partnershipMap": null
+  },
+  "errorMessage": null,
+  "errorCode": null,
+  "rootCause": null,
+  "responseState": true
+}

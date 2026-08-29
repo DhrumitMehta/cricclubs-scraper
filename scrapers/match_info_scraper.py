@@ -90,7 +90,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 CLUB_ID   = 7605
 CLUB_SLUG = "Tanzania"
 
-BATCH_SIZE       = 10  # match IDs to attempt per run
+BATCH_SIZE       = 100  # match IDs to attempt per run
 CHECKPOINT_EVERY = 20    # flush to Supabase every N successful matches
 SCRAPE_DELAY     = 3.0   # seconds between requests
 
@@ -214,6 +214,34 @@ def _parse_points(text: str) -> tuple[str | None, int | None, str | None, int | 
     return team1, team1_score, team2, team2_score
 
 
+def _parse_team_names_from_summary(soup: BeautifulSoup) -> tuple[str | None, str | None]:
+    """
+    Team names live in the match-summary header, independent of the
+    "Points Earned" row (which is absent for knockout/playoff matches).
+
+    <div class="match-summary">
+        ...
+        <li class="win"><span class="teamName">Azania<br></span> ...</li>
+        <li class="vs">VS</li>
+        <li class="lose"><span class="teamName">Kisarawe<br></span> ...</li>
+        ...
+    </div>
+
+    Returns (team1_name, team2_name) in the order they appear on the page,
+    or (None, None) if the summary block / teamName spans aren't found.
+    """
+    summary = soup.find("div", class_="match-summary")
+    if not summary:
+        return None, None
+
+    team_spans = summary.find_all("span", class_="teamName")
+    names = [span.get_text(strip=True) for span in team_spans if span.get_text(strip=True)]
+
+    team1 = names[0] if len(names) >= 1 else None
+    team2 = names[1] if len(names) >= 2 else None
+    return team1, team2
+
+
 def _parse_toss(text: str) -> tuple[str | None, str | None]:
     """
     Parse 'AZANIA won the toss and elected to bat'
@@ -335,7 +363,7 @@ def scrape_match_info(driver, match_id: int) -> dict | None:
     if "Location" in row_map:
         record["venue"] = row_map["Location"].get_text(strip=True) or None
 
-    # ── Points Earned ─────────────────────────────────────────────────────────
+    # ── Points Earned (scores only — team names come from match-summary below) ─
     if "Points Earned" in row_map:
         pts_text = row_map["Points Earned"].get_text(" ", strip=True)
         t1, t1s, t2, t2s = _parse_points(pts_text)
@@ -343,6 +371,18 @@ def scrape_match_info(driver, match_id: int) -> dict | None:
         record["points_team_1_score"] = t1s
         record["points_team_2"]       = t2
         record["points_team_2_score"] = t2s
+
+    # ── Team names from match-summary header ─────────────────────────────────
+    # The "Points Earned" row only exists for league matches, so it can't be
+    # relied on for team names in knockout/playoff games. The match-summary
+    # block's <span class="teamName"> elements are present for every match
+    # type, so use them as the authoritative source for team names,
+    # overriding whatever (if anything) was derived from Points Earned.
+    summary_team1, summary_team2 = _parse_team_names_from_summary(soup)
+    if summary_team1:
+        record["points_team_1"] = summary_team1
+    if summary_team2:
+        record["points_team_2"] = summary_team2
 
     # ── Innings timings ───────────────────────────────────────────────────────
     # The timing rows have <th> elements directly in the row (no label/detail split),
